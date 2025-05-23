@@ -1,4 +1,4 @@
-import { ThemeProvider } from "@/components/theme-provider"
+import { Providers } from "./providers"
 
 import { Geist, Geist_Mono } from "next/font/google";
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -22,15 +22,11 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`} >
-        <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {children}
-          </ThemeProvider>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        {/* Aqui usa o Providers que já engloba SessionProvider e ThemeProvider */}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );

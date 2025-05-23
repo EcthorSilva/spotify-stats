@@ -1,13 +1,23 @@
+'use client'
+
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
+import { useSession, signIn, signOut } from "next-auth/react"
 
-export function LoginForm({
-  className,
-  ...props
-}) {
+export function LoginForm({ className, ...props }) {
+  const { data: session, status } = useSession();
+  
+  if (status === "loading") {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <form>
+      
         <div className="flex flex-col gap-6">
           <div className="flex flex-col items-center gap-2">
             <a href="#" className="flex flex-col items-center gap-2 font-medium">
@@ -23,14 +33,14 @@ export function LoginForm({
           </div>
           <div className="flex flex-col items-center">
             <div className="grid gap-2">
-              <Button type="submit" className="w-full bg-green-500 hover:bg-green-600 w-48">
+              <Button onClick={() => signIn("spotify")} className="w-full bg-green-500 hover:bg-green-600 w-48">
                 <i className="bi bi-spotify text-2xl" />
                 Login with Spotify
               </Button>
             </div>
           </div>
         </div>
-      </form>
+      
       <div
         className="text-balance text-center text-xs text-muted-foreground [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary  ">
         By clicking continue, you agree to our <a href="#">Terms of Service</a>{" "}
