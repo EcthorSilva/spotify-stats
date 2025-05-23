@@ -8,9 +8,18 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, 
 
 import { useSession, signIn, signOut } from "next-auth/react"
 import { ClipboardSignatureIcon } from "lucide-react"
+import { Spinner } from "@/components/ui/spinner"
 
 export default function HomePage() {
   const { data: session, status } = useSession();
+
+  if (status === "loading") {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen gap-4">
+        <Spinner className="h-8 w-8" />
+      </div>
+    );
+  }
 
   return (
     <div>
