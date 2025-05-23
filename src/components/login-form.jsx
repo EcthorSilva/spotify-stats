@@ -34,7 +34,7 @@ export function LoginForm({ className, ...props }) {
           </div>
           <div className="flex flex-col items-center">
             <div className="grid gap-2">
-              <Button onClick={() => signIn("spotify")} className="w-full bg-green-500 hover:bg-green-600 w-48">
+              <Button onClick={() => signIn("spotify")} className="w-full bg-green-500 hover:bg-green-600">
                 <i className="bi bi-spotify text-2xl" />
                 Login with Spotify
               </Button>

@@ -1,4 +1,3 @@
-// src/app/api/auth/[...nextauth]/route.js
 import NextAuth from "next-auth";
 import SpotifyProvider from "next-auth/providers/spotify";
 
@@ -29,7 +28,7 @@ const handler = NextAuth({
     signIn: "/login",
     error: "/login",
   },
-  debug: true, // habilita mais logs
+  debug: true,
 });
 
 export { handler as GET, handler as POST };
