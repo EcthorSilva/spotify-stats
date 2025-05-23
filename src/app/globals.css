@@ -119,3 +119,19 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Scrollbars */
+*::-webkit-scrollbar-track {
+    /* cor e reio da faixa da barra de rolagem */
+    background-color: var(--secondary);
+}
+*::-webkit-scrollbar {
+    /* Largura e altura da barra de rolagem */
+    width: 6px;
+    height: 6px;
+}
+*::-webkit-scrollbar-thumb {
+    /* Cor e raio do "polegar" da barra de rolagem */
+    background-color: #58585877;
+    border-radius: 35px;
+}
