@@ -7,6 +7,7 @@ import { Card, CardHeader} from "@/components/ui/card"
 
 import Navbar from "@/components/navbar"
 import TopSongsCard from "@/components/top-songs-card"
+import CurrentlyPlayingCard from "@/components/currently-playing-card";
 import TimeRangeToggle from "@/components/time-range-toggle"
 
 export default function HomePage() {
@@ -55,6 +56,13 @@ export default function HomePage() {
           // top songs card
           <TopSongsCard songs={topSongs} />
         )}
+        {/* currently playing card */}
+        <div className="mb-5">
+          <CurrentlyPlayingCard className="pb-5 mb-5" />
+        </div>
+        <div className="flex justify-center py-10">
+          <Spinner className="h-8 w-8" />
+        </div>
       </div>
     </div>
   );
