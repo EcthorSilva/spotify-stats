@@ -5,10 +5,10 @@ import { Button } from "@/components/ui/button"
 import { Spinner } from '@/components/ui/spinner';
 import { useEffect, useState  } from "react";
 import { useRouter } from "next/navigation"
-import { useSession, signIn } from "next-auth/react"
+import { useSession, signIn, signOut } from "next-auth/react"
 
 export function LoginForm({ className, ...props }) {
-  const { data: status } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const [isRedirecting, setIsRedirecting] = useState(false);
 
@@ -28,7 +28,7 @@ export function LoginForm({ className, ...props }) {
       </div>
     );
   }
-
+  
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       

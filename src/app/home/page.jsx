@@ -1,17 +1,31 @@
 'use client'
 
-import { Button } from "@/components/ui/button"
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, } from "@/components/ui/card"
-
-import { useSession, signIn, signOut } from "next-auth/react"
-import { ClipboardSignatureIcon } from "lucide-react"
+import { useEffect, useState  } from "react";
+import { useSession } from "next-auth/react"
 import { Spinner } from "@/components/ui/spinner"
+import { Card, CardHeader} from "@/components/ui/card"
+
+import Navbar from "@/components/navbar"
+import TopSongsCard from "@/components/top-songs-card"
+import TimeRangeToggle from "@/components/time-range-toggle"
 
 export default function HomePage() {
   const { data: session, status } = useSession();
+  const [timeRange, setTimeRange] = useState("short_term");
+  const [topSongs, setTopSongs] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  console.log(topSongs)
+
+  useEffect(() => {
+    if (!session) return;
+    setLoading(true);
+    fetch(`/api/top-songs?time_range=${timeRange}`)
+      .then(res => res.json())
+      .then(data => setTopSongs(data.items || []))
+      .catch(err => console.error(err))
+      .finally(() => setLoading(false));
+  }, [session, timeRange]);
 
   if (status === "loading") {
     return (
@@ -24,146 +38,24 @@ export default function HomePage() {
   return (
     <div>
       {/* navbar */}
-      <nav className="mb-4 flex justify-center top-0 z-40 w-full bg-background">
-        <div className="container mx-auto px-5 py-4 flex h-full items-center">
-          <nav className="hidden w-full items-center justify-between lg:flex">
-            <div className="flex w-full items-center justify-between gap-6">
-              <a href="/" className="group flex items-center gap-1.5 font-semibold">
-                {/* <img src={session.user.image} class="w-6 transition-opacity duration-300 group-hover:opacity-65" alt="Shadcnblocks Logo" /> */}
-                <span className="flex items-center gap-1 text-[16px] tracking-[-1px] transition-opacity duration-300 group-hover:opacity-65">
-                  Um nome bacana aqui
-                </span>
-              </a>
-              <div className="flex gap-2">
-                <DropdownMenu>
-                  <DropdownMenuTrigger>
-                    <Avatar>
-                      <AvatarImage src={session.user.image} />
-                      <AvatarFallback>{session.user.email}</AvatarFallback>
-                    </Avatar>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="mx-2">
-                    <DropdownMenuLabel>{session.user.name}</DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem>Account Settings</DropdownMenuItem>
-                    <DropdownMenuItem>Support</DropdownMenuItem>
-                    <DropdownMenuItem>Liscense</DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => signOut()} className="hover:bg-green-600 md:hover:bg-green-600">Sign out</DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
-            </div>
-          </nav>
-          <div className="flex w-full items-center justify-between lg:hidden">
-            <a href="/" className="group flex items-center gap-1.5 font-semibold">
-              {/* <img src={session.user.image} class="w-6 transition-opacity duration-300 group-hover:opacity-65" alt="Shadcnblocks Logo" /> */}
-              <span className="flex items-center gap-1 text-[16px] tracking-[-1px] transition-opacity duration-300 group-hover:opacity-65">
-                Um nome bacana aqui
-              </span>
-            </a>
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <Avatar>
-                  <AvatarImage src={session.user.image} />
-                  <AvatarFallback>{session.user.email}</AvatarFallback>
-                </Avatar>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="mx-2">
-                <DropdownMenuLabel>{session.user.name}</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>Account Settings</DropdownMenuItem>
-                <DropdownMenuItem>Support</DropdownMenuItem>
-                <DropdownMenuItem>Liscense</DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => signOut()} className="hover:bg-green-600 md:hover:bg-green-600">Sign out</DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </div>
-      </nav>
-      {/* opções */}
+      <Navbar session={session} />
       <div className="container mx-auto px-5 py-1 justify-center">
+        {/* time range toggle */}
         <Card className="shadow-md mb-4">
           <CardHeader>
-            <ToggleGroup type="single" variant="outline" className="w-full" defaultValue="a">
-              <ToggleGroupItem value="a">4 Weeks</ToggleGroupItem>
-              <ToggleGroupItem value="b">6 Months</ToggleGroupItem>
-              <ToggleGroupItem value="c">Lifetime</ToggleGroupItem>
-            </ToggleGroup>
+            <TimeRangeToggle timeRange={timeRange} setTimeRange={setTimeRange} />
           </CardHeader>
         </Card>
-        {/* card top songs */}
-        <Card className="shadow-md mb-4">
-          <CardHeader>
-            <CardTitle className="text-xl">Top Songs</CardTitle>
-            <CardDescription>Your top songs</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-6 gap-4">
-              <div className="text-center">
-                <div className="w-full aspect-square relative rounded-md overflow-hidden mb-1">
-                  <img src={session.user.image} alt="Cover" className="w-full h-full object-cover" />
-                </div>
-                <div className="text-white text-sm font-semibold flex items-center justify-center gap-1">
-                  <span>1. Song Name</span>
-                </div>
-              </div>
 
-              <div className="text-center">
-                <div className="w-full aspect-square relative rounded-md overflow-hidden mb-1">
-                  <img src={session.user.image} alt="Cover" className="w-full h-full object-cover" />
-                </div>
-                <div className="text-white text-sm font-semibold flex items-center justify-center gap-1">
-                  <span>2. Song Name</span>
-                </div>
-              </div>
-
-              <div className="text-center">
-                <div className="w-full aspect-square relative rounded-md overflow-hidden mb-1">
-                  <img src={session.user.image} alt="Cover" className="w-full h-full object-cover" />
-                </div>
-                <div className="text-white text-sm font-semibold flex items-center justify-center gap-1">
-                  <span>3. Song Name</span>
-                </div>
-              </div>
-
-              <div className="text-center">
-                <div className="w-full aspect-square relative rounded-md overflow-hidden mb-1">
-                  <img src={session.user.image} alt="Cover" className="w-full h-full object-cover" />
-                </div>
-                <div className="text-white text-sm font-semibold flex items-center justify-center gap-1">
-                  <span>4. Song Name</span>
-                </div>
-              </div>
-
-              <div className="text-center">
-                <div className="w-full aspect-square relative rounded-md overflow-hidden mb-1">
-                  <img src={session.user.image} alt="Cover" className="w-full h-full object-cover" />
-                </div>
-                <div className="text-white text-sm font-semibold flex items-center justify-center gap-1">
-                  <span>5. Song Name</span>
-                </div>
-              </div>
-              <div className="text-center">
-                <div className="w-full aspect-square relative rounded-md overflow-hidden mb-1">
-                  <img src={session.user.image} alt="Cover" className="w-full h-full object-cover" />
-                </div>
-                <div className="text-white text-sm font-semibold flex items-center justify-center gap-1">
-                  <span>6. Song Name</span>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-          <CardFooter className="justify-end">
-            <Button className=" bg-green-500 hover:bg-green-600">
-              <ClipboardSignatureIcon className="mr-2 h-4 w-4" />
-              Share
-            </Button>
-          </CardFooter>
-        </Card>
+        {loading ? (
+          <div className="flex justify-center py-10">
+            <Spinner className="h-8 w-8" />
+          </div>
+        ) : (
+          // top songs card
+          <TopSongsCard songs={topSongs} />
+        )}
       </div>
     </div>
-
   );
 }
