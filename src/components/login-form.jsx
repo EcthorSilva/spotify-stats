@@ -2,19 +2,32 @@
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { useSession, signIn, signOut } from "next-auth/react"
 import { Spinner } from '@/components/ui/spinner';
+import { useEffect, useState  } from "react";
+import { useRouter } from "next/navigation"
+import { useSession, signIn } from "next-auth/react"
 
 export function LoginForm({ className, ...props }) {
-  const { data: session, status } = useSession();
-  
-  // if (status === "loading") {
-  //   return (
-  //     <div className="flex items-center justify-center min-h-screen">
-  //       <Spinner size="small" show={true} className="text-primary" />
-  //     </div>
-  //   );
-  // }
+  const { data: status } = useSession();
+  const router = useRouter();
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      setIsRedirecting(true);
+      router.push("/home");
+    } else {
+      setIsRedirecting(false);
+    }
+  }, [status, router]);
+
+  if (status === "loading" || isRedirecting) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Spinner size="small" show={true} className="text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>

@@ -82,7 +82,7 @@ export default function HomePage() {
           </div>
         </div>
       </nav>
-      {/* main content */}
+      {/* opções */}
       <div className="container mx-auto px-5 py-1 justify-center">
         <Card className="shadow-md mb-4">
           <CardHeader>
@@ -93,8 +93,8 @@ export default function HomePage() {
             </ToggleGroup>
           </CardHeader>
         </Card>
-
-        <Card className="shadow-md">
+        {/* card top songs */}
+        <Card className="shadow-md mb-4">
           <CardHeader>
             <CardTitle className="text-xl">Top Songs</CardTitle>
             <CardDescription>Your top songs</CardDescription>
@@ -163,24 +163,6 @@ export default function HomePage() {
           </CardFooter>
         </Card>
       </div>
-
-      {/* <div className="flex flex-col items-center justify-center min-h-screen gap-4">
-        <h1 className="text-2xl font-bold">Bem-vindo, {session.user.name}</h1>
-        <p className="text-sm text-muted-foreground"></p>
-        <div className="flex flex-col items-center gap-2">
-          <div className="flex flex-col items-center">
-            <Avatar>
-              <AvatarImage src={session.user.image} />
-              <AvatarFallback>{session.user.name}</AvatarFallback>
-            </Avatar>
-          </div>
-        </div>
-        <div className="grid gap-2">
-          <Button onClick={() => signOut()} className="w-full bg-red-500 hover:bg-red-600 w-48">
-            Sair
-          </Button>
-        </div>
-      </div> */}
     </div>
 
   );
