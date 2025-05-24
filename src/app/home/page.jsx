@@ -42,7 +42,7 @@ export default function HomePage() {
       <div className="container mx-auto px-5 py-1 justify-center">
         {/* time range toggle */}
         <Card className="shadow-md mb-4">
-          <CardHeader>
+          <CardHeader className="p-3">
             <TimeRangeToggle timeRange={timeRange} setTimeRange={setTimeRange} />
           </CardHeader>
         </Card>
