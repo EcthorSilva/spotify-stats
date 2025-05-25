@@ -47,11 +47,13 @@ export default function HomePage() {
             <TimeRangeToggle timeRange={timeRange} setTimeRange={setTimeRange} />
           </CardHeader>
         </Card>
-
         {loading ? (
-          <div className="flex justify-center py-10">
-            <Spinner className="h-8 w-8" />
-          </div>
+          // loading spinner
+          <Card className="shadow-md mb-4">
+            <CardHeader className="p-3">
+              <Spinner className="h-8 w-8" />
+            </CardHeader>
+          </Card>
         ) : (
           // top songs card
           <TopSongsCard songs={topSongs} />
@@ -59,9 +61,6 @@ export default function HomePage() {
         {/* currently playing card */}
         <div className="mb-5">
           <CurrentlyPlayingCard className="pb-5 mb-5" />
-        </div>
-        <div className="flex justify-center py-10">
-          <Spinner className="h-8 w-8" />
         </div>
       </div>
     </div>
