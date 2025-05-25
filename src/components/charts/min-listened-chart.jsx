@@ -30,7 +30,7 @@ const chartData = [
 const chartConfig = {
   minutesListened: {
     label: "Minutos Ouvidos",
-    color: "hsl(var(--chart-1))",
+    color: "hsl(var(--chart-2))",
   },
 }
 
