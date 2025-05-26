@@ -60,9 +60,9 @@ export default function ListeningHistory() {
               <Image
                 src={track.albumImage}
                 alt={track.name}
-                width={100}
-                height={100}
-                className="rounded"
+                width={64}
+                height={64}
+                className="rounded w-16 h-16 shrink-0"
               />            
               <div className="flex flex-col">
                 <Link
