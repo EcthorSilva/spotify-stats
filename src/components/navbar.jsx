@@ -26,8 +26,9 @@ export default function navbar({ session }) {
                 <DropdownMenuContent className="mx-2">
                   <DropdownMenuLabel>{session.user.name}</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild><a href="/home">Home</a></DropdownMenuItem>
-                  <DropdownMenuItem asChild><a href="/charts">Charts</a></DropdownMenuItem>
+                    <DropdownMenuItem asChild><a href="/home">Home</a></DropdownMenuItem>
+                    <DropdownMenuItem asChild><a href="/profile">Profile</a></DropdownMenuItem>
+                    <DropdownMenuItem asChild><a href="/charts">Charts</a></DropdownMenuItem>
                   <DropdownMenuItem>Settings</DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => signOut()} className="hover:bg-green-600 md:hover:bg-green-600">Sign out</DropdownMenuItem>
@@ -52,8 +53,9 @@ export default function navbar({ session }) {
             <DropdownMenuContent className="mx-2">
               <DropdownMenuLabel>{session.user.name}</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem asChild><a href="/home">Home</a></DropdownMenuItem>
-              <DropdownMenuItem asChild><a href="/charts">Charts</a></DropdownMenuItem>
+                <DropdownMenuItem asChild><a href="/home">Home</a></DropdownMenuItem>
+                <DropdownMenuItem asChild><a href="/profile">Profile</a></DropdownMenuItem>
+                <DropdownMenuItem asChild><a href="/charts">Charts</a></DropdownMenuItem>
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => signOut()} className="hover:bg-green-600 md:hover:bg-green-600">Sign out</DropdownMenuItem>

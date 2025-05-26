@@ -16,7 +16,7 @@ export default function ListeningHistory() {
 
     const fetchRecentlyPlayed = async () => {
       try {
-        const res = await fetch("https://api.spotify.com/v1/me/player/recently-played?limit=20", {
+        const res = await fetch("https://api.spotify.com/v1/me/player/recently-played?limit=50", {
           headers: {
             Authorization: `Bearer ${session.accessToken}`,
           },
