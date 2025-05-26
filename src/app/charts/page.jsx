@@ -34,9 +34,9 @@ export default function ChartsPage() {
         <div className="shadow-md mb-4">
           <ArtistPopularityChart />
         </div>
-        {/* chart Genre Radar */}
+        {/* chart Genre Radar - 11 horas de timeout por too many request*/}
         <div className="shadow-md mb-4 ">
-          <GenreRadarChart />
+          {/* <GenreRadarChart /> */}
         </div>
         {/* chart Min Listened 6 months */}
         <div className="shadow-md mb-4 blur-sm">

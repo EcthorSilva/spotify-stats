@@ -44,6 +44,12 @@ export async function GET(req) {
       },
     });
 
+    if (artistsRes.status === 429) {
+      const retryAfter = artistsRes.headers.get("Retry-After");
+      console.warn(`Spotify rate limited. Retry after ${retryAfter} seconds`);
+      await new Promise((r) => setTimeout(r, retryAfter));
+    }
+
     if (!artistsRes.ok) {
       console.warn(`Erro ao buscar lote de artistas: ${artistsRes.status} ${artistsRes.statusText}`);
       continue;
