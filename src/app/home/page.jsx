@@ -10,6 +10,8 @@ import TopSongsCard from "@/components/top-songs-card"
 import CurrentlyPlayingCard from "@/components/currently-playing-card";
 import TimeRangeToggle from "@/components/time-range-toggle"
 
+import ListeningHistory from "@/components/ListeningHistory";
+
 export default function HomePage() {
   const { data: session, status } = useSession();
   const [timeRange, setTimeRange] = useState("short_term");
@@ -61,6 +63,10 @@ export default function HomePage() {
         {/* currently playing card */}
         <div className="mb-5">
           <CurrentlyPlayingCard className="pb-5 mb-5" />
+        </div>
+        {/* listening history */}
+        <div className="shadow-md">
+          <ListeningHistory />
         </div>
       </div>
     </div>

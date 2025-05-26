@@ -12,16 +12,6 @@ import { minListenedChart as MinListenedChart } from "@/components/charts/min-li
 export default function ChartsPage() {
   const { data: session, status } = useSession();
 
-    // useEffect(() => {
-    //   if (!session) return;
-    //   setLoading(true);
-    //   fetch(`/api/top-songs?time_range=${timeRange}`)
-    //     .then(res => res.json())
-    //     .then(data => setTopSongs(data.items || []))
-    //     .catch(err => console.error(err))
-    //     .finally(() => setLoading(false));
-    // }, [session, timeRange]);
-
   if (status === "loading") {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen gap-4">
