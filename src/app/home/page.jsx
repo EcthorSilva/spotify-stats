@@ -61,6 +61,10 @@ export default function HomePage() {
       {/* navbar */}
       <Navbar session={session} />
       <div className="container mx-auto px-5 py-1 justify-center">
+        {/* currently playing */}
+        <div className="mb-5">
+          <CurrentlyPlayingCard className="pb-5 mb-5" />
+        </div>
         {/* Time Filter */}
         <div className="mb-4">
           <Tabs value={timeRange} onValueChange={setTimeRange}>
@@ -86,10 +90,6 @@ export default function HomePage() {
             <TopArtistsCard artists={topArtists} />
           </>
         )}
-        {/* currently playing */}
-        <div className="mb-5">
-          <CurrentlyPlayingCard className="pb-5 mb-5" />
-        </div>
       </div>
     </div>
   );
