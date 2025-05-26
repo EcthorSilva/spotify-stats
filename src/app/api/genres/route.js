@@ -47,7 +47,7 @@ export async function GET(req) {
   .slice(0, 5)
   .map(([genre, value]) => ({
     genre,
-    medium_term: Math.log(value + 5), // +4 para evitar log(0)
+    medium_term: Math.log(value + 3), // +2 para evitar log(0)
   }));
 
   return NextResponse.json(chartData);

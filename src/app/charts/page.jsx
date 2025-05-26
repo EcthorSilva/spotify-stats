@@ -29,13 +29,13 @@ export default function ChartsPage() {
         <div className="mb-5">
           <CurrentlyPlayingCard className="pb-5 mb-5" />
         </div>
-        {/* chart Min Listened 6 months */}
-        <div className="shadow-md mb-4 blur-sm">
-          <MinListenedChart />
-        </div>
         {/* chart Genre Radar */}
         <div className="shadow-md mb-4 ">
           <GenreRadarChart />
+        </div>
+        {/* chart Min Listened 6 months */}
+        <div className="shadow-md mb-4 blur-sm">
+          <MinListenedChart />
         </div>
       </div>
     </div>
