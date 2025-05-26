@@ -6,8 +6,7 @@ import { Spinner } from "@/components/ui/spinner";
 
 import Navbar from "@/components/navbar";
 import CurrentlyPlayingCard from "@/components/currently-playing-card";
-import { minListenedChart as MinListenedChart } from "@/components/charts/MinListenedChart";
-import { GenreRadarChart } from "@/components/charts/GenreRadarChart";
+import { minListenedChart as MinListenedChart } from "@/components/charts/MinListenedChart"; 
 import { ArtistPopularityChart } from "@/components/charts/ArtistPopularityChart";
 import { ListeningHoursChart } from "@/components/charts/ListeningHoursChart";
 
