@@ -53,7 +53,9 @@ export default function HomePage() {
           // loading spinner
           <Card className="shadow-md mb-4">
             <CardHeader className="p-3">
-              <Spinner className="h-8 w-8" />
+              <div className="flex justify-center items-center h-24">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-muted" />
+              </div>
             </CardHeader>
           </Card>
         ) : (
