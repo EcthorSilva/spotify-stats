@@ -36,7 +36,7 @@ export default function ChartsPage() {
         </div>
         {/* chart Genre Radar - 11 horas de timeout por too many request*/}
         <div className="shadow-md mb-4 ">
-          {/* <GenreRadarChart /> */}
+          <GenreRadarChart />
         </div>
         {/* chart Listening Hours */}
         <div className="shadow-md mb-4">
