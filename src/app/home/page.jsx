@@ -10,6 +10,8 @@ import TopSongsCard from "@/components/top-songs-card"
 import CurrentlyPlayingCard from "@/components/currently-playing-card";
 import TimeRangeToggle from "@/components/time-range-toggle"
 
+import ListeningHistory from "@/components/ListeningHistory";
+
 export default function HomePage() {
   const { data: session, status } = useSession();
   const [timeRange, setTimeRange] = useState("short_term");
@@ -31,7 +33,7 @@ export default function HomePage() {
   if (status === "loading") {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen gap-4">
-        <Spinner className="h-8 w-8" />
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-muted" />
       </div>
     );
   }
@@ -47,11 +49,15 @@ export default function HomePage() {
             <TimeRangeToggle timeRange={timeRange} setTimeRange={setTimeRange} />
           </CardHeader>
         </Card>
-
         {loading ? (
-          <div className="flex justify-center py-10">
-            <Spinner className="h-8 w-8" />
-          </div>
+          // loading spinner
+          <Card className="shadow-md mb-4">
+            <CardHeader className="p-3">
+              <div className="flex justify-center items-center h-24">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-muted" />
+              </div>
+            </CardHeader>
+          </Card>
         ) : (
           // top songs card
           <TopSongsCard songs={topSongs} />
@@ -60,8 +66,9 @@ export default function HomePage() {
         <div className="mb-5">
           <CurrentlyPlayingCard className="pb-5 mb-5" />
         </div>
-        <div className="flex justify-center py-10">
-          <Spinner className="h-8 w-8" />
+        {/* listening history */}
+        <div className="shadow-md">
+          <ListeningHistory />
         </div>
       </div>
     </div>

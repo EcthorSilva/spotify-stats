@@ -8,6 +8,7 @@ import { Spinner } from "@/components/ui/spinner";
 export default function CurrentlyPlayingCard() {
   const [track, setTrack] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isPremium, setIsPremium] = useState(true); // padrão true para fallback otimista
 
   useEffect(() => {
     let intervalId;
@@ -16,6 +17,15 @@ export default function CurrentlyPlayingCard() {
       try {
         const res = await fetch("/api/currently-playing");
         const data = await res.json();
+
+        if (!data.isPremium) {
+          setIsPremium(false);
+          setTrack(null);
+          return;
+        }
+
+        setIsPremium(true);
+
         if (data.isPlaying) {
           setTrack(data);
         } else {
@@ -40,6 +50,16 @@ export default function CurrentlyPlayingCard() {
       <div className="flex justify-center py-4">
         <Spinner className="h-6 w-6" />
       </div>
+    );
+  }
+
+  if (!isPremium) {
+    return (
+      <Card className="p-4 max-w-md bg-muted mt-4 mx-auto">
+        <p className="text-sm text-muted-foreground">
+          Esse recurso está disponível apenas para contas Premium do Spotify.
+        </p>
+      </Card>
     );
   }
 
