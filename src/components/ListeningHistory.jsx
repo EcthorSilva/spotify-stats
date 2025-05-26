@@ -37,6 +37,7 @@ export default function ListeningHistory() {
         }));
 
         setTracks(parsedTracks);
+        console.log("Fetched recently played tracks:", parsedTracks);
       } catch (error) {
         console.error("Failed to fetch recently played tracks:", error);
       }

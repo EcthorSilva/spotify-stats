@@ -9,6 +9,7 @@ import CurrentlyPlayingCard from "@/components/currently-playing-card";
 import { minListenedChart as MinListenedChart } from "@/components/charts/MinListenedChart";
 import { GenreRadarChart } from "@/components/charts/GenreRadarChart";
 import { ArtistPopularityChart } from "@/components/charts/ArtistPopularityChart";
+import { ListeningHoursChart } from "@/components/charts/ListeningHoursChart";
 
 export default function ChartsPage() {
   const { data: session, status } = useSession();
@@ -37,6 +38,10 @@ export default function ChartsPage() {
         {/* chart Genre Radar - 11 horas de timeout por too many request*/}
         <div className="shadow-md mb-4 ">
           {/* <GenreRadarChart /> */}
+        </div>
+        {/* chart Listening Hours */}
+        <div className="shadow-md mb-4">
+          <ListeningHoursChart />
         </div>
         {/* chart Min Listened 6 months */}
         <div className="shadow-md mb-4 blur-sm">
