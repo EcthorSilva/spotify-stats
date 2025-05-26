@@ -10,6 +10,7 @@ export async function GET(req) {
 
   const accessToken = token.accessToken;
 
+  // 1. Buscar top tracks do usuário
   const res = await fetch("https://api.spotify.com/v1/me/top/tracks?time_range=medium_term&limit=50", {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -22,37 +23,52 @@ export async function GET(req) {
     return NextResponse.json({ error: "Failed to fetch top tracks" }, { status: 500 });
   }
 
+  // 2. Coletar todos os IDs de artistas únicos
+  const artistIdsSet = new Set();
+  data.items.forEach(track => {
+    track.artists.forEach(artist => {
+      artistIdsSet.add(artist.id);
+    });
+  });
+
+  const artistIds = Array.from(artistIdsSet);
   const genreCounts = {};
 
-  for (const track of data.items) {
-    for (const artist of track.artists) {
-      const artistRes = await fetch(`https://api.spotify.com/v1/artists/${artist.id}`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      if (!artistRes.ok) {
-        console.warn(`Erro ao buscar artista ${artist.id}: ${artistRes.status} ${artistRes.statusText}`)
-        continue
-      }
-      const artistData = await artistRes.json();
+  // 3. Buscar artistas em lotes de até 50
+  for (let i = 0; i < artistIds.length; i += 50) {
+    const idsBatch = artistIds.slice(i, i + 50).join(',');
 
-      if (artistData.genres) {
-        for (const raw of artistData.genres) {
-          const base = raw.toLowerCase();
-          genreCounts[base] = (genreCounts[base] || 0) + 1;
+    const artistsRes = await fetch(`https://api.spotify.com/v1/artists?ids=${idsBatch}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!artistsRes.ok) {
+      console.warn(`Erro ao buscar lote de artistas: ${artistsRes.status} ${artistsRes.statusText}`);
+      continue;
+    }
+
+    const { artists } = await artistsRes.json();
+
+    for (const artist of artists) {
+      if (artist.genres) {
+        for (const genre of artist.genres) {
+          const normalized = genre.toLowerCase();
+          genreCounts[normalized] = (genreCounts[normalized] || 0) + 1;
         }
       }
     }
   }
 
+  // 4. Construir dados para gráfico radar
   const chartData = Object.entries(genreCounts)
-  .sort((a, b) => b[1] - a[1])
-  .slice(0, 5)
-  .map(([genre, value]) => ({
-    genre,
-    medium_term: Math.log(value + 3), // +2 para evitar log(0)
-  }));
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([genre, value]) => ({
+      genre,
+      medium_term: Math.log(value + 3), // suavização
+    }));
 
   return NextResponse.json(chartData);
 }

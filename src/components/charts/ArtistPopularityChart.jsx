@@ -84,7 +84,7 @@ export function ArtistPopularityChart() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Popularidade dos 5 Artistas Mais Ouvidos</CardTitle>
+        <CardTitle>Popularidade dos seus 5 Artistas Mais Ouvidos</CardTitle>
         <CardDescription>Últimos 6 meses</CardDescription>
       </CardHeader>
       <CardContent>
