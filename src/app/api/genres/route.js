@@ -22,17 +22,6 @@ export async function GET(req) {
     return NextResponse.json({ error: "Failed to fetch top tracks" }, { status: 500 });
   }
 
-  const genreMap = {
-    pop: "Pop",
-    rock: "Rock",
-    rap: "Rap",
-    hip_hop: "Rap",
-    indie: "Indie",
-    electronic: "Electronic",
-    edm: "Electronic",
-    dance: "Electronic",
-  };
-
   const genreCounts = {};
 
   for (const track of data.items) {
@@ -47,21 +36,18 @@ export async function GET(req) {
       if (artistData.genres) {
         for (const raw of artistData.genres) {
           const base = raw.toLowerCase();
-          for (const key in genreMap) {
-            if (base.includes(key)) {
-              const genre = genreMap[key];
-              genreCounts[genre] = (genreCounts[genre] || 0) + 1;
-              break;
-            }
-          }
+          genreCounts[base] = (genreCounts[base] || 0) + 1;
         }
       }
     }
   }
 
-  const chartData = Object.entries(genreCounts).map(([genre, value]) => ({
+  const chartData = Object.entries(genreCounts)
+  .sort((a, b) => b[1] - a[1])
+  .slice(0, 5)
+  .map(([genre, value]) => ({
     genre,
-    medium_term: value,
+    medium_term: Math.log(value + 5), // +4 para evitar log(0)
   }));
 
   return NextResponse.json(chartData);

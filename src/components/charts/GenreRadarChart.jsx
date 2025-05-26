@@ -42,6 +42,7 @@ export function GenreRadarChart() {
         const res = await fetch("/api/genres")
         const data = await res.json()
         setChartData(data)
+        console.log("Fetched genres data:", data)
         if (!data || data.length === 0) {
           console.error("No data received for genres chart")
         }
