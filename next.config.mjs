@@ -2,7 +2,9 @@
 const nextConfig = {
     images:{
         domains: [
-            "i.scdn.co"
+            "i.scdn.co",
+            "image-cdn-fa.spotifycdn.com",
+            "image-cdn-ak.spotifycdn.com"
         ],
     }
 };
