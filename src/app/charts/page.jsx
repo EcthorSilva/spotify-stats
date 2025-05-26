@@ -6,8 +6,9 @@ import { Spinner } from "@/components/ui/spinner";
 
 import Navbar from "@/components/navbar";
 import CurrentlyPlayingCard from "@/components/currently-playing-card";
-import { minListenedChart as MinListenedChart } from "@/components/charts/min-listened-chart";
+import { minListenedChart as MinListenedChart } from "@/components/charts/MinListenedChart";
 import { GenreRadarChart } from "@/components/charts/GenreRadarChart";
+import { ArtistPopularityChart } from "@/components/charts/ArtistPopularityChart";
 
 export default function ChartsPage() {
   const { data: session, status } = useSession();
@@ -15,7 +16,7 @@ export default function ChartsPage() {
   if (status === "loading") {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen gap-4">
-        <Spinner className="h-8 w-8" />
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-muted" />
       </div>
     );
   }
@@ -28,6 +29,10 @@ export default function ChartsPage() {
         {/* currently playing card */}
         <div className="mb-5">
           <CurrentlyPlayingCard className="pb-5 mb-5" />
+        </div>
+        {/* chart Artist Popularity */}
+        <div className="shadow-md mb-4">
+          <ArtistPopularityChart />
         </div>
         {/* chart Genre Radar */}
         <div className="shadow-md mb-4 ">

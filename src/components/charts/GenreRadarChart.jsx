@@ -31,23 +31,24 @@ const chartConfig = {
   },
 }
 
-
 export function GenreRadarChart() {
   const [chartData, setChartData] = useState([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
     const fetchGenres = async () => {
       try {
         const res = await fetch("/api/genres")
         const data = await res.json()
-        setChartData(data)
-        console.log("Fetched genres data:", data)
         if (!data || data.length === 0) {
-          console.error("No data received for genres chart")
+          throw new Error("Dados vazios")
         }
+        setChartData(data)
+        setError(false)
       } catch (error) {
         console.error("Failed to fetch genres:", error)
+        setError(true)
       } finally {
         setLoading(false)
       }
@@ -55,7 +56,6 @@ export function GenreRadarChart() {
 
     fetchGenres()
   }, [])
-
 
   return (
     <Card>
@@ -65,9 +65,14 @@ export function GenreRadarChart() {
           Estilos que você mais ouviu nos últimos 6 meses
         </CardDescription>
       </CardHeader>
+
       {loading ? (
         <CardContent className="flex justify-center items-center h-[250px]">
           <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-muted" />
+        </CardContent>
+      ) : error ? (
+        <CardContent className="text-center text-sm text-muted-foreground h-[250px] flex items-center justify-center">
+          Não foi possível carregar os dados agora. Tente novamente mais tarde.
         </CardContent>
       ) : (
         <CardContent className="pb-0">
@@ -91,10 +96,10 @@ export function GenreRadarChart() {
           </ChartContainer>
         </CardContent>
       )}
+
       <CardFooter className="text-muted-foreground text-sm text-center">
         Dados baseados nas suas 50 músicas mais ouvidas por período
       </CardFooter>
     </Card>
-
   )
 }

@@ -31,6 +31,10 @@ export async function GET(req) {
           Authorization: `Bearer ${accessToken}`,
         },
       });
+      if (!artistRes.ok) {
+        console.warn(`Erro ao buscar artista ${artist.id}: ${artistRes.status} ${artistRes.statusText}`)
+        continue
+      }
       const artistData = await artistRes.json();
 
       if (artistData.genres) {
