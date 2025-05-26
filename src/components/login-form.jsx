@@ -24,7 +24,7 @@ export function LoginForm({ className, ...props }) {
   if (status === "loading" || isRedirecting) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <Spinner size="small" show={true} className="text-primary" />
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-muted" />
       </div>
     );
   }
