@@ -7,28 +7,46 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import Navbar from "@/components/navbar"
 import TopSongsCard from "@/components/top-songs-card"
+import TopArtistsCard from "@/components/top-artists-card";
 import CurrentlyPlayingCard from "@/components/currently-playing-card";
-import TimeRangeToggle from "@/components/time-range-toggle"
-
-import ListeningHistory from "@/components/ListeningHistory";
 
 export default function HomePage() {
   const { data: session, status } = useSession();
   const [timeRange, setTimeRange] = useState("short_term");
   const [topSongs, setTopSongs] = useState([]);
+  const [topArtists, setTopArtists] = useState([]);
   const [loading, setLoading] = useState(true);
 
   console.log(topSongs)
 
   useEffect(() => {
     if (!session) return;
-    setLoading(true);
-    fetch(`/api/top-songs?time_range=${timeRange}`)
-      .then(res => res.json())
-      .then(data => setTopSongs(data.items || []))
-      .catch(err => console.error(err))
-      .finally(() => setLoading(false));
+
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const [songsRes, artistsRes] = await Promise.all([
+          fetch(`/api/top-songs?time_range=${timeRange}`),
+          fetch(`/api/top-artists?time_range=${timeRange}`),
+        ]);
+
+        const [songsData, artistsData] = await Promise.all([
+          songsRes.json(),
+          artistsRes.json(),
+        ]);
+
+        setTopSongs(songsData.items || []);
+        setTopArtists(artistsData.items || []);
+      } catch (err) {
+        console.error("Failed to fetch top songs or artists:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, [session, timeRange]);
+
 
   if (status === "loading") {
     return (
@@ -53,7 +71,7 @@ export default function HomePage() {
             </TabsList>
           </Tabs>
         </div>
-
+        {/* top music */}
         {loading ? (
           <Card className="shadow-md mb-4">
             <CardHeader className="p-3">
@@ -63,9 +81,12 @@ export default function HomePage() {
             </CardHeader>
           </Card>
         ) : (
-          <TopSongsCard songs={topSongs} />
+          <>
+            <TopSongsCard songs={topSongs} />
+            <TopArtistsCard artists={topArtists} />
+          </>
         )}
-
+        {/* currently playing */}
         <div className="mb-5">
           <CurrentlyPlayingCard className="pb-5 mb-5" />
         </div>
