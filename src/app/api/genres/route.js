@@ -10,12 +10,17 @@ export async function GET(req) {
 
   const accessToken = token.accessToken;
 
-  // 1. Buscar top tracks do usuário
-  const res = await fetch("https://api.spotify.com/v1/me/top/tracks?time_range=medium_term&limit=50", {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+  const { searchParams } = new URL(req.url);
+  const term = searchParams.get("term") || "medium_term";
+
+  const res = await fetch(
+    `https://api.spotify.com/v1/me/top/tracks?time_range=${term}&limit=50`,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
 
   const data = await res.json();
 
@@ -23,7 +28,6 @@ export async function GET(req) {
     return NextResponse.json({ error: "Failed to fetch top tracks" }, { status: 500 });
   }
 
-  // 2. Coletar todos os IDs de artistas únicos
   const artistIdsSet = new Set();
   data.items.forEach(track => {
     track.artists.forEach(artist => {
@@ -32,9 +36,9 @@ export async function GET(req) {
   });
 
   const artistIds = Array.from(artistIdsSet);
-  const genreCounts = {};
 
-  // 3. Buscar artistas em lotes de até 50
+  const genreToArtistsMap = {};
+
   for (let i = 0; i < artistIds.length; i += 50) {
     const idsBatch = artistIds.slice(i, i + 50).join(',');
 
@@ -45,9 +49,11 @@ export async function GET(req) {
     });
 
     if (artistsRes.status === 429) {
+      // Tratamento de rate limit (aguarda o Retry-After)
       const retryAfter = artistsRes.headers.get("Retry-After");
       console.warn(`Spotify rate limited. Retry after ${retryAfter} seconds`);
-      await new Promise((r) => setTimeout(r, retryAfter));
+      await new Promise((r) => setTimeout(r, (retryAfter || 1) * 1000));
+      continue;
     }
 
     if (!artistsRes.ok) {
@@ -57,23 +63,33 @@ export async function GET(req) {
 
     const { artists } = await artistsRes.json();
 
+    // Para cada artista, adicionar os gêneros no map
     for (const artist of artists) {
       if (artist.genres) {
         for (const genre of artist.genres) {
           const normalized = genre.toLowerCase();
-          genreCounts[normalized] = (genreCounts[normalized] || 0) + 1;
+          if (!genreToArtistsMap[normalized]) {
+            genreToArtistsMap[normalized] = new Set();
+          }
+          genreToArtistsMap[normalized].add(artist.id);
         }
       }
     }
   }
 
-  // 4. Construir dados para gráfico radar
-  const chartData = Object.entries(genreCounts)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 5)
-    .map(([genre, value]) => ({
+  // Total de artistas analisados
+  const totalArtists = artistIds.length;
+
+  const chartData = Object.entries(genreToArtistsMap)
+    .map(([genre, artistSet]) => ({
       genre,
-      medium_term: Math.log(value + 3), // suavização
+      medium_term: (artistSet.size / totalArtists) * 100,
+    }))
+    .sort((a, b) => b.medium_term - a.medium_term)
+    .slice(0, 5) // top 5 gêneros
+    .map(({ genre, medium_term }) => ({
+      genre,
+      medium_term: Math.round(medium_term + 0), // arredondar para inteiro
     }));
 
   return NextResponse.json(chartData);
