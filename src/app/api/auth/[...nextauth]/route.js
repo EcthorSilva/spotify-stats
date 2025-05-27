@@ -23,14 +23,9 @@ const handler = NextAuth({
   callbacks: {
     async jwt({ token, account, user }) {
       if (account && user) {
-        // Primeiro login, o objeto `user` só vem aqui no primeiro callback JWT após login.
-        // Vamos tentar salvar no banco se não existir usuário com esse email.
-
-        // Checar se o usuário já existe
         const existingUsers = await sql`SELECT * FROM users WHERE email = ${user.email}`;
 
         if (existingUsers.length === 0) {
-          // Não existe, inserir novo usuário
           await sql`
             INSERT INTO users (email, name, first_login)
             VALUES (${user.email}, ${user.name}, NOW())

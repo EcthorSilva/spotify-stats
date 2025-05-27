@@ -7,28 +7,83 @@ export async function GET(req) {
     return new Response(JSON.stringify({ error: "Not authenticated" }), { status: 401 });
   }
 
-  // Busca música atual
-  const res = await fetch("https://api.spotify.com/v1/me/player/currently-playing", {
+  // Busca a música atual
+  const currentlyPlayingRes = await fetch("https://api.spotify.com/v1/me/player/currently-playing", {
     headers: {
       Authorization: `Bearer ${token.accessToken}`,
     },
   });
 
-  if (res.status === 204 || res.status > 400) {
+  if (currentlyPlayingRes.status === 204 || currentlyPlayingRes.status >= 400) {
     return new Response(JSON.stringify({ isPlaying: false }), { status: 200 });
   }
 
-  const data = await res.json();
+  const currentlyPlaying = await currentlyPlayingRes.json();
+  const trackId = currentlyPlaying?.item?.id;
+
+  if (!trackId) {
+    return new Response(JSON.stringify({ isPlaying: false }), { status: 200 });
+  }
+
+  // Busca detalhes da música
+  const trackRes = await fetch(`https://api.spotify.com/v1/tracks/${trackId}`, {
+    headers: {
+      Authorization: `Bearer ${token.accessToken}`,
+    },
+  });
+
+  if (!trackRes.ok) {
+    return new Response(JSON.stringify({ error: "Failed to fetch track" }), { status: 500 });
+  }
+
+  const trackData = await trackRes.json();
+
+  const periods = [
+    { label: "nas últimas 4 semanas", range: "short_term" },
+    { label: "nos últimos 6 meses", range: "medium_term" },
+    { label: "de todos os tempos", range: "long_term" },
+  ];
+
+  let topRank = null;
+  let topPeriod = null;
+
+  for (const period of periods) {
+    const topRes = await fetch(`https://api.spotify.com/v1/me/top/tracks?time_range=${period.range}&limit=50`, {
+      headers: {
+        Authorization: `Bearer ${token.accessToken}`,
+      },
+    });
+
+    if (!topRes.ok) continue;
+
+    const topData = await topRes.json();
+    const index = topData.items.findIndex((item) => item.id === trackId);
+
+    if (index !== -1) {
+      topRank = index + 1;
+      topPeriod = period.label;
+      break;
+    }
+  }
 
   const track = {
-    isPlaying: data.is_playing,
-    name: data.item.name,
+    isPlaying: currentlyPlaying.is_playing,
+    name: trackData.name,
+    id: trackData.id,
+    popularity: trackData.popularity,
+    duration_ms: trackData.duration_ms,
+    preview_url: trackData.preview_url,
+    url: trackData.external_urls.spotify,
     album: {
-      name: data.item.album.name,
-      images: data.item.album.images,
+      name: trackData.album.name,
+      images: trackData.album.images,
     },
-    artists: data.item.artists.map((artist) => ({ name: artist.name })),
-    url: data.item.external_urls.spotify,
+    artists: trackData.artists.map((artist) => ({
+      name: artist.name,
+      url: artist.external_urls.spotify,
+    })),
+    topRank,   // posição numérica no top 50, ou null
+    topPeriod, // texto do período correspondente, ou null
   };
 
   return new Response(JSON.stringify(track), { status: 200 });
